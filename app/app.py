@@ -11,7 +11,7 @@ with open ("app/data.json") as file:
 
 # Global Functions ---------------------------------------------------------------------------------
 
-#function to get travels to specify destination
+#function to get travels with a specific destination
 def get_travels(city):
     
     travels = []
@@ -47,7 +47,7 @@ def order_economy(travel_list):
 # ---------------------------------------------------------------------------------------------------
 
 
-#function expose as API Method to search options
+#function exposed as API Method to search options
 @app.route('/home', methods=['GET'])
 def get_travels_result():
 
