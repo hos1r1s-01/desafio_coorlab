@@ -1,15 +1,17 @@
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response, request
 import json
 
 app = Flask(__name__)
 
+
+#using json archive as database file
 with open ("app/data.json") as file:
     database = json.load(file)
 
-"""@app.route('/home', methods=['GET'])
-def home():
-    return make_response(jsonify(database))"""
 
+# Global Functions ---------------------------------------------------------------------------------
+
+#function to get travels to specify destination
 def get_travels(city):
     
     travels = []
@@ -21,6 +23,7 @@ def get_travels(city):
     return travels
 
 
+#function to sort comfort travel options
 def order_comfort(travel_list):
 
     for travel in travel_list:
@@ -34,16 +37,27 @@ def order_comfort(travel_list):
     return sortedlist[0]
 
 
+#function to sort economic travel options
 def order_economy(travel_list):
 
     sortedlist = sorted(travel_list, key=lambda x: (x['price_econ']))
 
     return sortedlist[0]
 
+# ---------------------------------------------------------------------------------------------------
 
 
-print(order_comfort(get_travels('São Paulo')))
-print('-------------------------------------')
-print(order_economy(get_travels('São Paulo')))
+#function expose as API Method to search options
+@app.route('/home', methods=['GET'])
+def get_travels_result():
 
-#app.run(debug=True)
+    json_request = request.json
+    
+    city = json_request['city']
+
+    result = {"comfort": order_comfort(get_travels(city)), "economy": order_economy(get_travels(city))}
+    
+    return make_response(jsonify(result))
+    
+
+app.run(debug=True)
